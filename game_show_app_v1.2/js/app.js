@@ -2,7 +2,7 @@ const qwerty = document.getElementById('qwerty');
 const phrase = document.getElementById('phrase');
 const overlay = document.getElementById('overlay');
 const buttonReset = document.querySelector('button.btn__reset');
-const missed = 0;
+let missed = 0;
 const phrases = ['HIP TO BE SQUARE', 'THE HEART OF ROCK AND ROLL', 'THE POWER OF LOVE', 'DO YOU BELIEVE IN LOVE', 'WORKIN FOR A LIVIN'];
 const ul = phrase.querySelector('ul');
 
@@ -38,20 +38,42 @@ addPhraseToDisplay(getRandomPhraseAsArray(phrases));
 
 function checkLetter(button) {
     let phraseElements = document.querySelectorAll('li.letter');
-    let match = '';
+    let match = false;
     for(let i = 0; i < phraseElements.length; i++) {
         if (phraseElements[i].textContent.toUpperCase() === button.textContent.toUpperCase()) {
             phraseElements[i].classList.add('show');
-            match = phraseElements[i];
+            match = true;
         }
     }
+    return match;
 }
 
-document.addEventListener('click', (e) => {
-    if(event.target.tagName === 'BUTTON') {
-        event.target.classList.add('chosen');
-        event.target.setAttribute('disabled', true);
-        checkLetter(event.target);
+qwerty.addEventListener('click', (e) => {
+    if(e.target.tagName === 'BUTTON') {
+        e.target.classList.add('chosen');
+        e.target.setAttribute('disabled', true);
+        const match = checkLetter(e.target);
+            if (!match) {
+                const tries = document.querySelectorAll('.tries');
+                tries[missed].style.display = 'none';
+                missed++;
+            }
     }
+    checkWin();
 })
+
+function checkWin() {
+    const letterSum = document.getElementsByClassName('letter');
+    const showSum = document.getElementsByClassName('show');
+    const endGameMessage = document.querySelector('h2.title');
+    if(letterSum.length === showSum.length) {
+        endGameMessage.textContent = "You've Won!!!";
+        overlay.style.display = 'flex';
+        overlay.classList.add('win');
+    } else if(missed > 4) {
+        endGameMessage.textContent = "You've Lost";
+        overlay.style.display = 'flex';
+        overlay.classList.add('lose');
+    }
+}
 

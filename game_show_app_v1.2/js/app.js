@@ -36,6 +36,7 @@ function addPhraseToDisplay(arr) {
 
 addPhraseToDisplay(getRandomPhraseAsArray(phrases));
 
+//This function checks to see if the button that was clicked by the user matches a letter in the phrase. If so, the 'show' class is added to display the letter on the page
 function checkLetter(button) {
     let phraseElements = document.querySelectorAll('li.letter');
     let match = false;
@@ -48,12 +49,14 @@ function checkLetter(button) {
     return match;
 }
 
+//This event listener listens for a click action on the div with the 'qwerty'ID, changes the color of the clicked button in the div, and disables it
 qwerty.addEventListener('click', (e) => {
     if(e.target.tagName === 'BUTTON') {
         e.target.classList.add('chosen');
         e.target.setAttribute('disabled', true);
         const match = checkLetter(e.target);
-            if (!match) {
+        //if the button clicked does not match a letter within the phrase, increment the missed counter by one    
+        if (!match) {
                 const tries = document.querySelectorAll('.tries');
                 tries[missed].style.display = 'none';
                 missed++;
@@ -62,6 +65,7 @@ qwerty.addEventListener('click', (e) => {
     checkWin();
 })
 
+//This function validates if the number of letters clicked matches the number of letters in the phrase and displays the win overlay if true.
 function checkWin() {
     const letterSum = document.getElementsByClassName('letter');
     const showSum = document.getElementsByClassName('show');
@@ -70,6 +74,7 @@ function checkWin() {
         endGameMessage.textContent = "You've Won!!!";
         overlay.style.display = 'flex';
         overlay.classList.add('win');
+    //if the number of incorrect letter guesses is above 4, the lose overlay displays
     } else if(missed > 4) {
         endGameMessage.textContent = "You've Lost";
         overlay.style.display = 'flex';
